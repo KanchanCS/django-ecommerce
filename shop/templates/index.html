@@ -40,7 +40,7 @@
               {{product.title}}
               <div class="price-text">$ {{product.price}}</div>
               <a href="/{{ product.id }}" class="btn btn-warning">View</a>
-              <button class="btn atc btn-warning">Add to cart</button>
+              <button id="{{product.id}}" class="btn atc btn-warning">Add to cart</button>
             </div>
           </div>
         </div>
@@ -97,8 +97,10 @@
 
   }
   $(document).on('click', '.atc', function () {
-    console.log("The add to cart button is click ")
-  })
+    console.log("The add to cart button is click ");
+    var item_id = this.id.toString();
+    console.log(item_id);
+  });
 </script>
 
 </html>
