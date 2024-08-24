@@ -22,3 +22,4 @@ def detail(request,id):
     product_object = Product.objects.get(id=id)
     return render(request, 'detail.html', {'product_object': product_object})
 
+
