@@ -3,17 +3,18 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="Description" content="Enter your description here" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <link rel="stylesheet" href={% static "style.css" %} />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="{%  static 'style.css' %}">
   <title>Title</title>
 </head>
 
 <body>
+
   <div class="container">
     <!-- navbar start -->
 
@@ -35,8 +36,9 @@
                   <a class="nav-link" href="#">Features</a>
                 </li>
                 <li class="nav-item">
-                  <button id="cart" type="button" class="btn btn-secondary" data-bs-container="body"
-                    data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Bottom popover">
+                  <button id="cart" data-html="true" type="button" class="btn btn-secondary" data-container="body"
+                    data-toggle="popover" data-placement="bottom" data-content="Vivamus
+                    sagittis lacus vel augue laoreet rutrum faucibus.">
                     Cart(0)
                   </button>
                 </li>
@@ -73,11 +75,11 @@
       {% for product in product_objects %}
       <div class="col-md-3">
         <div class="card h-100">
-          <img src="  {{product.image}}" class="card-img-top" width="100" height="200" />
+          <img src="{{product.image}}" class="card-img-top" width="100" height="200" />
           <div class="card-body">
-            <div class="product-title">
+            <div id="nm{{product.id}}" class="card-title">
               {{product.title}}
-              <div class="price-text">$ {{product.price}}</div>
+              <div class="price-text">${{product.price}}</div>
               <a href="/{{ product.id }}" class="btn btn-warning">View</a>
               <button id="{{product.id}}" class="btn atc btn-warning">Add to cart</button>
             </div>
@@ -120,11 +122,11 @@
     </nav>
     <!-- paginator end  -->
   </div>
-  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
 </body>
+
 
 <!-- add to cart button  -->
 <script type="text/javascript">
@@ -149,14 +151,31 @@
     console.log(cart);
     localStorage.setItem('cart', JSON.stringify(cart));
     document.getElementById("cart").innerHTML = "Cart(" + Object.keys(cart).length + ")";
-    console.log(Object.keys(cart).length);
 
   });
-  var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-  var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-    return new bootstrap.Popover(popoverTriggerEl)
-  })
+  //popmethod link
+
+  $(function () {
+    $('[data-toggle="popover"]').popover();
+    document.getElementById("cart").setAttribute('data-content', '<h2>This is your cart</h2>');
+  });
+
+  DisplayCart(cart);
+  function DisplayCart(cart) {
+    var cartString = "";
+    cartString += "<h2> This is your cart</h2>";
+    var cartIndex = 1;
+    for (var x in cart) {
+      cartString += cartIndex;
+      cartString += document.getElementById("nm" + x).innerHTML + "Qty:" + cart[x] + "</br>";
+      cartIndex += 1;
+    }
+    document.getElementById("cart").setAttribute('data-content', cartString);
+ 
+  }
 
 </script>
+
+
 
 </html>
