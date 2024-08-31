@@ -3,25 +3,64 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="Description" content="Enter your description here" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <link rel="stylesheet" href={% static "style.css" %} />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="{%  static 'style.css' %}">
   <title>Title</title>
 </head>
 
 <body>
+
   <div class="container">
-    <div class="row">
+
+    <div class="row ">
+      <div class="col-md-12">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <a class="navbar-brand" href="#">ABC Shopping</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+              </li>
+              <li class="nav-item">
+                <button id="cart" data-html="true" type="button" class="btn btn-secondary" data-container="body"
+                  data-toggle="popover" data-placement="bottom" data-content="Vivamus
+                        sagittis lacus vel augue laoreet rutrum faucibus.">
+                  Cart(0)
+                </button>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#">Disabled</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+
+    <!-- navbar End -->
+
+
+    <!-- cart handling start-->
+    <div class="row m-5">
       <div class="col-md-12">
         <form class="card card-sm">
           <div class="card-body row no-gutters align-items-center">
             <div class="col">
-              <input type="search" name="item_name" placeholder="Search for Product"
-                class="form-control from-control-borderless" />
+              <input type="search" name='item_name' placeholder="Search for products"
+                class="form-control form-control-borderless">
             </div>
             <div class="col-auto">
               <button class="btn btn-success" type="submit">Search</button>
@@ -30,24 +69,26 @@
         </form>
       </div>
     </div>
+
+
     <div class="row">
       {% for product in product_objects %}
       <div class="col-md-3">
         <div class="card h-100">
-          <img src="  {{product.image}}" class="card-img-top" width="100" height="200" />
+          <img src="{{product.image}}" class="card-img-top" width="100" height="200" />
           <div class="card-body">
-            <div class="product-title">
+            <div id="nm{{product.id}}" class="card-title">
               {{product.title}}
-              <div class="price-text">$ {{product.price}}</div>
+              <div class="price-text">${{product.price}}</div>
               <a href="/{{ product.id }}" class="btn btn-warning">View</a>
-              <a href="/{{ product.id }}" class="btn btn-warning">Add to cart</a>
+              <button id="{{product.id}}" class="btn atc btn-warning">Add to cart</button>
             </div>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
-    {% comment %} paginator start {% endcomment %}
+    <!-- paginator start  -->
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
         {% if product_objects.has_previous %}
@@ -79,9 +120,63 @@
         {% endif %}
       </ul>
     </nav>
+    <!-- paginator end  -->
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
 </body>
+
+
+<!-- add to cart button  -->
+<script type="text/javascript">
+  console.log('this is working');
+  if (localStorage.getItem('cart') == null) {
+    var cart = {};
+  } else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+  }
+
+  $(document).on('click', '.atc', function () {
+    console.log("The add to cart button is clicked");
+    var item_id = this.id.toString();
+    console.log(item_id);
+    if (cart[item_id] != undefined) {
+      cart[item_id] = cart[item_id] + 1;
+    } else {
+      cart[item_id] = 1;
+    }
+    console.log(cart);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    document.getElementById("cart").innerHTML = "Cart(" + Object.keys(cart).length + ")";
+
+    // Call DisplayCart after updating the cart
+    DisplayCart(cart);
+  });
+
+  // Popover initialization
+
+
+  function DisplayCart(cart) {
+    var cartString = "";
+    cartString += "<h2>This is your cart</h2>";
+    var cartIndex = 1;
+
+    for (var x in cart) {
+      var productElement = document.getElementById("nm" + x);
+      if (productElement) { // Check if the element exists
+        cartString += cartIndex + ". " + productElement.innerHTML + " Qty: " + cart[x] + "</br>";
+        cartIndex += 1;
+      } else {
+        console.warn("Element with ID nm" + x + " not found."); // Log a warning if the element is not found
+        
+      } }
+    cartString += "<a href='/checkout'><button class='btn btn-warning' id='checkout'>Checkout</button></a>"; 
+    document.getElementById("cart").setAttribute('data-content', cartString);
+    $('[data-toggle="popover"]').popover();
+  }
+  
+</script>
+
 
 </html>
