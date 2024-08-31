@@ -55,19 +55,20 @@
 
     <!-- cart handling start-->
     <div class="row m-5">
-            <div class="col-md-12">
-                <form class="card card-sm">
-                    <div class="card-body row no-gutters align-items-center">
-                        <div class="col">
-                            <input type="search" name='item_name' placeholder="Search for products" class="form-control form-control-borderless">
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-success" type="submit" >Search</button>
-                        </div>
-                    </div>
-                </form>
+      <div class="col-md-12">
+        <form class="card card-sm">
+          <div class="card-body row no-gutters align-items-center">
+            <div class="col">
+              <input type="search" name='item_name' placeholder="Search for products"
+                class="form-control form-control-borderless">
             </div>
-        </div>
+            <div class="col-auto">
+              <button class="btn btn-success" type="submit">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
 
 
     <div class="row">
@@ -132,47 +133,50 @@
   console.log('this is working');
   if (localStorage.getItem('cart') == null) {
     var cart = {};
-  }
-  else {
+  } else {
     cart = JSON.parse(localStorage.getItem('cart'));
-
   }
+
   $(document).on('click', '.atc', function () {
-    console.log("The add to cart button is click ");
+    console.log("The add to cart button is clicked");
     var item_id = this.id.toString();
     console.log(item_id);
     if (cart[item_id] != undefined) {
       cart[item_id] = cart[item_id] + 1;
-    }
-    else {
+    } else {
       cart[item_id] = 1;
     }
     console.log(cart);
     localStorage.setItem('cart', JSON.stringify(cart));
     document.getElementById("cart").innerHTML = "Cart(" + Object.keys(cart).length + ")";
 
-  });
-  //popmethod link
-
-  $(function () {
-    $('[data-toggle="popover"]').popover();
-    document.getElementById("cart").setAttribute('data-content', '<h2>This is your cart</h2>');
+    // Call DisplayCart after updating the cart
+    DisplayCart(cart);
   });
 
-  DisplayCart(cart);
+  // Popover initialization
+
+
   function DisplayCart(cart) {
     var cartString = "";
-    cartString += "<h2> This is your cart</h2>";
+    cartString += "<h2>This is your cart</h2>";
     var cartIndex = 1;
+
     for (var x in cart) {
-      cartString += cartIndex;
-      cartString += document.getElementById("nm" + x).innerHTML + "Qty:" + cart[x] + "</br>";
-      cartIndex += 1;
-    }
+      var productElement = document.getElementById("nm" + x);
+      if (productElement) { // Check if the element exists
+        cartString += cartIndex + ". " + productElement.innerHTML + " Qty: " + cart[x] + "</br>";
+        cartIndex += 1;
+      } else {
+        console.warn("Element with ID nm" + x + " not found."); // Log a warning if the element is not found
+        
+      } }
+    cartString += "<a href='/checkout'><button class='btn btn-warning' id='checkout'>Checkout</button></a>"; 
     document.getElementById("cart").setAttribute('data-content', cartString);
-
+    $('[data-toggle="popover"]').popover();
   }
-
+  
 </script>
+
 
 </html>

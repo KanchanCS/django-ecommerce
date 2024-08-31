@@ -23,3 +23,5 @@ def detail(request,id):
     return render(request, 'detail.html', {'product_object': product_object})
 
 
+def checkout(request):
+    return render(request,'checkout.html')
